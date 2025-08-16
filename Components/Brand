@@ -1,0 +1,308 @@
+import { Sun, Waves } from 'lucide-react'
+
+// Import Solwave assets with fallbacks
+let solwaveLogo: string = ''
+let solwaveLogoText: string = ''
+
+try {
+  solwaveLogo = require('figma:asset/a394a0257928ff8402401c85ce47ebf8705989fb.png')
+  solwaveLogoText = require('figma:asset/bc6c5e5045df481608bd5133a4fe35e064201757.png')
+} catch {
+  // Will use fallback design below
+}
+
+// Direct imports of the official Solwave assets
+import officialLogo from 'figma:asset/a394a0257928ff8402401c85ce47ebf8705989fb.png'
+import officialTypography from 'figma:asset/bc6c5e5045df481608bd5133a4fe35e064201757.png'
+
+interface SolwaveLogoProps {
+  variant?: 'header' | 'hero' | 'footer'
+  showText?: boolean
+  className?: string
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+}
+
+/**
+ * Solwave Logo Component
+ * @description Official Solwave brand logo with responsive sizing and typography
+ * @param variant - Display context: header, hero, or footer
+ * @param showText - Whether to display the Solwave typography alongside the logo
+ * @param className - Additional CSS classes
+ * @param size - Logo size: sm, md, lg, xl
+ */
+export function SolwaveLogo({ 
+  variant = 'header', 
+  showText = true, 
+  className = '',
+  size = 'md' 
+}: SolwaveLogoProps) {
+  
+  // Size configurations
+  const sizeConfig = {
+    sm: { logo: 'w-6 h-6', text: 'text-lg', gap: 'gap-2' },
+    md: { logo: 'w-10 h-10', text: 'text-2xl', gap: 'gap-3' },
+    lg: { logo: 'w-16 h-16', text: 'text-3xl', gap: 'gap-4' },
+    xl: { logo: 'w-24 h-24', text: 'text-4xl', gap: 'gap-6' }
+  }
+  
+  const config = sizeConfig[size]
+  
+  // Create professional SVG logo if assets aren't available
+  const SolwaveLogoSVG = () => (
+    <div 
+      className={`${config.logo} rounded-full flex items-center justify-center relative overflow-hidden`}
+      style={{ 
+        background: 'linear-gradient(135deg, #131EAB 0%, #1a25b8 50%, #EDA33C 100%)',
+        boxShadow: '0 4px 12px rgba(19, 30, 171, 0.3)'
+      }}
+    >
+      {/* Sun rays effect */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `conic-gradient(from 0deg, 
+            rgba(237, 163, 60, 0.8) 0deg, 
+            transparent 45deg, 
+            rgba(237, 163, 60, 0.6) 90deg, 
+            transparent 135deg, 
+            rgba(237, 163, 60, 0.8) 180deg, 
+            transparent 225deg, 
+            rgba(237, 163, 60, 0.6) 270deg, 
+            transparent 315deg, 
+            rgba(237, 163, 60, 0.8) 360deg)`
+        }}
+      />
+      
+      {/* Central sun icon */}
+      <Sun 
+        className="relative z-10"
+        style={{ 
+          width: '60%', 
+          height: '60%', 
+          color: '#F5F3E8',
+          filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
+        }} 
+      />
+      
+      {/* Subtle wave elements */}
+      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 z-10">
+        <Waves 
+          style={{ 
+            width: '40%', 
+            height: '40%', 
+            color: 'rgba(245, 243, 232, 0.6)'
+          }} 
+        />
+      </div>
+    </div>
+  )
+  
+  // Typography component with official asset support
+  const SolwaveTypography = () => {
+    if (officialTypography || solwaveLogoText) {
+      return (
+        <img 
+          src={officialTypography || solwaveLogoText} 
+          alt="Solwave" 
+          className={`object-contain ${
+            variant === 'header' ? 'h-8' : 
+            variant === 'hero' ? 'h-12' : 'h-6'
+          }`}
+          style={{ 
+            filter: 'none',
+            maxWidth: '100%',
+            maxHeight: '100%'
+          }}
+        />
+      )
+    }
+    
+    // Fallback typography with custom styling
+    return (
+      <span 
+        className={`font-bold tracking-tight ${config.text}`}
+        style={{ 
+          fontFamily: "'Inter', sans-serif",
+          color: variant === 'hero' ? '#F5F3E8' : '#131EAB',
+          letterSpacing: '-0.025em',
+          textShadow: variant === 'hero' ? '0 2px 4px rgba(0, 0, 0, 0.3)' : 'none',
+          background: variant === 'header' ? 'linear-gradient(135deg, #131EAB 0%, #1a25b8 100%)' : 'transparent',
+          backgroundClip: variant === 'header' ? 'text' : 'border-box',
+          WebkitBackgroundClip: variant === 'header' ? 'text' : 'border-box',
+          WebkitTextFillColor: variant === 'header' ? 'transparent' : undefined
+        }}
+      >
+        Solwave
+      </span>
+    )
+  }
+  
+  return (
+    <div className={`flex items-center ${config.gap} ${className}`}>
+      {/* Logo */}
+      <div className="flex-shrink-0">
+        {officialLogo || solwaveLogo ? (
+          <div 
+            className={`${config.logo} flex items-center justify-center overflow-hidden`}
+            style={{ 
+              background: 'transparent',
+              padding: '2px'
+            }}
+          >
+            <img 
+              src={officialLogo || solwaveLogo} 
+              alt="Solwave Logo" 
+              className="w-full h-full object-contain"
+              style={{ 
+                filter: 'none',
+                maxWidth: '100%',
+                maxHeight: '100%'
+              }}
+            />
+          </div>
+        ) : (
+          <SolwaveLogoSVG />
+        )}
+      </div>
+      
+      {/* Typography */}
+      {showText && (
+        <div className="flex items-center">
+          <SolwaveTypography />
+        </div>
+      )}
+    </div>
+  )
+}
+
+/**
+ * Solwave Header Logo Component
+ * @description Simplified header version with mobile responsiveness
+ * Used specifically in the main navigation header
+ */
+export function SolwaveHeaderLogo() {
+  return (
+    <div 
+      className="flex items-center gap-3 transition-transform duration-200 hover:scale-105"
+      style={{ padding: '0 16px 0 0' }}
+    >
+      {/* Official Solwave Icon */}
+      <div 
+        className="w-10 h-10 flex items-center justify-center relative overflow-hidden"
+        style={{ 
+          background: 'transparent'
+        }}
+      >
+        {officialLogo ? (
+          <img 
+            src={officialLogo} 
+            alt="Solwave Logo" 
+            className="w-full h-full object-contain"
+            style={{ 
+              filter: 'none',
+              maxWidth: '100%',
+              maxHeight: '100%'
+            }}
+          />
+        ) : (
+          <>
+            {/* Fallback: Animated sun with rays */}
+            <div 
+              className="w-10 h-10 rounded-full flex items-center justify-center relative overflow-hidden"
+              style={{ 
+                background: 'linear-gradient(135deg, #131EAB 0%, #1a25b8 50%, #EDA33C 100%)',
+                boxShadow: '0 2px 8px rgba(19, 30, 171, 0.2)'
+              }}
+            >
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: `conic-gradient(from 0deg, 
+                    rgba(237, 163, 60, 0.4) 0deg, 
+                    transparent 45deg, 
+                    rgba(237, 163, 60, 0.3) 90deg, 
+                    transparent 135deg, 
+                    rgba(237, 163, 60, 0.4) 180deg, 
+                    transparent 225deg, 
+                    rgba(237, 163, 60, 0.3) 270deg, 
+                    transparent 315deg, 
+                    rgba(237, 163, 60, 0.4) 360deg)`,
+                  animation: 'spin-slow 8s linear infinite'
+                }}
+              />
+              <Sun 
+                className="w-6 h-6 relative z-10"
+                style={{ 
+                  color: '#F5F3E8',
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))'
+                }} 
+              />
+            </div>
+          </>
+        )}
+      </div>
+      
+      {/* Official Solwave Typography - Hidden on small mobile, visible on tablet+ */}
+      <div className="hidden sm:flex items-center">
+        {officialTypography ? (
+          <img 
+            src={officialTypography} 
+            alt="Solwave" 
+            className="h-8 object-contain"
+            style={{ 
+              filter: 'none',
+              maxWidth: '200px',
+              maxHeight: '100%'
+            }}
+          />
+        ) : (
+          <span 
+            className="text-2xl font-bold tracking-tight"
+            style={{ 
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: '-0.025em',
+              background: 'linear-gradient(135deg, #131EAB 0%, #1a25b8 70%, #EDA33C 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: 'none'
+            }}
+          >
+            Solwave
+          </span>
+        )}
+      </div>
+      
+      {/* Mobile-only: Show smaller typography on very small screens */}
+      <div className="flex sm:hidden items-center">
+        {officialTypography ? (
+          <img 
+            src={officialTypography} 
+            alt="Solwave" 
+            className="h-6 object-contain"
+            style={{ 
+              filter: 'none',
+              maxWidth: '150px',
+              maxHeight: '100%'
+            }}
+          />
+        ) : (
+          <span 
+            className="text-lg font-bold tracking-tight"
+            style={{ 
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: '-0.025em',
+              background: 'linear-gradient(135deg, #131EAB 0%, #1a25b8 70%, #EDA33C 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: 'none'
+            }}
+          >
+            Solwave
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
